@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ec4899">
+<title>Shree Om Garments</title>
+<style>
+:root{--pink:#ec4899;--deep:#be185d;--pale:#fff1f7;--ink:#241522;--muted:#766873;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:#fff8fb;color:var(--ink)}
+header{background:linear-gradient(135deg,#ec4899,#be185d);color:white;padding:22px 16px 20px;border-radius:0 0 24px 24px}
+.brand{font-size:23px;font-weight:800;letter-spacing:.2px}.tag{font-size:13px;opacity:.95;margin-top:5px}
+.wrap{max-width:760px;margin:auto}.toolbar{display:flex;gap:8px;margin:14px 14px 10px}
+input,select,button{font:inherit}input[type=search]{flex:1;min-width:0;border:1px solid #f3c7dc;border-radius:12px;padding:12px;background:white}
+button{border:0;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
+.btn{background:var(--deep);color:white}.btn-light{background:white;color:var(--deep);border:1px solid #f4bad4}
+.categories{display:flex;gap:8px;overflow:auto;padding:2px 14px 12px}
+.chip{white-space:nowrap;background:#ffe2ef;color:#9d174d;padding:8px 12px;border-radius:999px;font-size:13px}
+h2{font-size:18px;margin:10px 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 14px 20px}
+.card{background:white;border:1px solid #f7d8e6;border-radius:16px;overflow:hidden;box-shadow:0 3px 12px #6b21400a}
+.photo{height:150px;background:#fff0f6;display:flex;align-items:center;justify-content:center;color:#c0266b;font-size:42px;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover}.details{padding:11px}.name{font-weight:750;font-size:15px}.desc{font-size:12px;color:var(--muted);margin:4px 0 10px}.actions{display:flex;gap:7px}.actions button{flex:1;font-size:12px;padding:9px 5px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:25px}
+footer{padding:20px 16px 95px;text-align:center;color:var(--muted);font-size:13px}
+.fab{position:fixed;bottom:16px;right:16px;z-index:4;border-radius:999px;background:var(--deep);color:white;padding:14px 17px;box-shadow:0 5px 20px #be185d55}
+.panel{display:none;background:white;margin:0 14px 18px;padding:14px;border:1px solid #f4c8dc;border-radius:16px}
+.panel.open{display:block}.panel h3{margin:0 0 12px}.field{display:block;width:100%;margin:8px 0;border:1px solid #e8c6d6;border-radius:10px;padding:11px;background:white}
+.row{display:flex;gap:8px}.row>*{min-width:0;flex:1}.small{font-size:12px;color:var(--muted);line-height:1.5}
+.cartline{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f7d8e6;padding:9px 0;gap:8px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.photo{height:180px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">श्री ओम गारमेंट्स</div>
+  <div class="tag">Girls & Kids Fashion · आपकी पसंद, हमारी पहचान</div>
+  <div class="tag">न्यू बारी मार्केट, मौनिया चौक, गोपालगंज</div>
+</header>
+<div class="toolbar">
+  <input id="search" type="search" placeholder="कपड़े खोजें…">
+  <button class="btn-light" onclick="toggleCart()">कार्ट <span id="cartCount">0</span></button>
+</div>
+<div class="categories">
+  <button class="chip" onclick="setCategory('सभी')">सभी</button>
+  <button class="chip" onclick="setCategory('लड़कियाँ')">लड़कियों के कपड़े</button>
+  <button class="chip" onclick="setCategory('बच्चे')">बच्चों के कपड़े</button>
+</div>
+<section id="cartPanel" class="panel">
+  <h3>आपका कार्ट</h3><div id="cartItems"></div>
+  <input id="customerName" class="field" placeholder="आपका नाम">
+  <input id="customerPhone" class="field" placeholder="मोबाइल नंबर">
+  <textarea id="customerAddress" class="field" placeholder="पता (वैकल्पिक)" rows="2"></textarea>
+  <button class="btn" style="width:100%" onclick="sendOrder()">WhatsApp पर ऑर्डर भेजें</button>
+  <p class="small">कपड़ों की कीमत WhatsApp पर पूछें। ऑर्डर भेजने से पहले दुकान से कीमत और उपलब्धता कन्फर्म कर लें।</p>
+</section>
+<section id="adminPanel" class="panel">
+  <h3>नया प्रोडक्ट जोड़ें</h3>
+  <input id="pName" class="field" placeholder="कपड़े का नाम">
+  <select id="pCategory" class="field"><option>लड़कियाँ</option><option>बच्चे</option></select>
+  <input id="pSize" class="field" placeholder="साइज़ (जैसे 2-3 साल / M / L)">
+  <input id="pPhoto" class="field" type="file" accept="image/*">
+  <button class="btn" style="width:100%" onclick="addProduct()">फोटो सहित प्रोडक्ट जोड़ें</button>
+  <p class="small">डेमो एडमिन पैनल: इस ब्राउज़र में जोड़े गए प्रोडक्ट इसी डिवाइस में सेव होंगे। सभी ग्राहकों को दिखाने के लिए ऑनलाइन डेटाबेस/होस्टिंग जोड़नी होगी।</p>
+</section>
+<h2 id="sectionTitle">नई कलेक्शन</h2>
+<div id="products" class="grid"></div>
+<footer>
+  <b>Shree Om Garments</b><br>
+  न्यू बारी मार्केट, मौनिया चौक, गोपालगंज<br>
+  <button class="btn-light" style="margin-top:12px" onclick="contactShop()">WhatsApp पर संपर्क करें</button>
+  <p class="small">यह शुरुआती प्रोटोटाइप है। असली ऑनलाइन स्टोर और APK बनाने के लिए होस्टिंग, साझा प्रोडक्ट स्टोरेज और Android पैकेजिंग की जरूरत होगी।</p>
+</footer>
+</div>
+<button class="fab" onclick="adminLogin()">＋ प्रोडक्ट जोड़ें</button>
+<script>
+const SHOP_NUMBER = "917070034707";
+const starter = [
+ {id:1,name:"लड़कियों की नई कलेक्शन",category:"लड़कियाँ",size:"साइज़ के लिए WhatsApp करें",emoji:"👗"},
+ {id:2,name:"बच्चों के प्यारे कपड़े",category:"बच्चे",size:"साइज़ के लिए WhatsApp करें",emoji:"🧸"},
+ {id:3,name:"फैशन कलेक्शन",category:"लड़कियाँ",size:"साइज़ के लिए WhatsApp करें",emoji:"🎀"},
+ {id:4,name:"किड्स वियर",category:"बच्चे",size:"साइज़ के लिए WhatsApp करें",emoji:"👕"}
+];
+let products = JSON.parse(localStorage.getItem("som_products")||"null") || starter;
+let cart = [];
+let category = "सभी";
+function save(){localStorage.setItem("som_products",JSON.stringify(products))}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase();
+ const list=products.filter(p=>(category==="सभी"||p.category===category)&&(`${p.name} ${p.category} ${p.size||''}`).toLowerCase().includes(q));
+ document.getElementById('products').innerHTML=list.length?list.map(p=>`<article class="card"><div class="photo">${p.photo?`<img src="${p.photo}" alt="">`:p.emoji||"👚"}</div><div class="details"><div class="name">${esc(p.name)}</div><div class="desc">${esc(p.category)} · ${esc(p.size||"साइज़ पूछें")}</div><div class="actions"><button class="btn" onclick="addCart(${p.id})">कार्ट में डालें</button><button class="btn-light" onclick="askPrice(${p.id})">कीमत पूछें</button></div></div></article>`).join(''):'<div class="empty">अभी कोई प्रोडक्ट नहीं मिला।</div>';
+ document.getElementById('cartCount').textContent=cart.reduce((n,x)=>n+x.qty,0);
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function setCategory(c){category=c;document.getElementById('sectionTitle').textContent=c==='सभी'?'नई कलेक्शन':c+' के कपड़े';render()}
+document.getElementById('search').addEventListener('input',render);
+function addCart(id){const p=products.find(x=>x.id===id);const existing=cart.find(x=>x.id===id);if(existing)existing.qty++;else cart.push({id,qty:1});render();renderCart();document.getElementById('cartPanel').classList.add('open')}
+function renderCart(){const el=document.getElementById('cartItems');el.innerHTML=cart.length?cart.map(x=>{const p=products.find(y=>y.id===x.id);return `<div class="cartline"><span>${esc(p?.name||'प्रोडक्ट')} × ${x.qty}</span><button class="btn-light" onclick="removeCart(${x.id})">हटाएँ</button></div>`}).join(''):'<p class="small">कार्ट खाली है।</p>'}
+function removeCart(id){cart=cart.filter(x=>x.id!==id);render();renderCart()}
+function toggleCart(){document.getElementById('cartPanel').classList.toggle('open');renderCart()}
+function askPrice(id){const p=products.find(x=>x.id===id);const msg=`नमस्ते श्री ओम गारमेंट्स, मुझे "${p.name}" की कीमत और उपलब्ध साइज़ बताइए।`;window.open(`https://wa.me/${SHOP_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank')}
+function contactShop(){window.open(`https://wa.me/${SHOP_NUMBER}?text=${encodeURIComponent('नमस्ते श्री ओम गारमेंट्स, मुझे कपड़ों की जानकारी चाहिए।')}`,'_blank')}
+function sendOrder(){if(!cart.length){alert('पहले कार्ट में कपड़े जोड़ें।');return}const name=document.getElementById('customerName').value.trim();const phone=document.getElementById('customerPhone').value.trim();const address=document.getElementById('customerAddress').value.trim();if(!name||!phone){alert('कृपया अपना नाम और मोबाइल नंबर भरें।');return}const lines=cart.map(x=>{const p=products.find(y=>y.id===x.id);return `• ${p.name} (${p.category}), मात्रा: ${x.qty}`}).join('\\n');const msg=`नमस्ते श्री ओम गारमेंट्स!\\nमुझे ये कपड़े ऑर्डर करने हैं:\\n${lines}\\n\\nनाम: ${name}\\nमोबाइल: ${phone}\\nपता: ${address||'बाद में बताऊँगा'}\\nकृपया कीमत और उपलब्धता कन्फर्म करें।`;window.open(`https://wa.me/${SHOP_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank')}
+function adminLogin(){const pin=prompt('एडमिन PIN डालें (डेमो PIN: 2468)');if(pin==='2468')document.getElementById('adminPanel').classList.toggle('open');else if(pin!==null)alert('गलत PIN।')}
+function addProduct(){const name=document.getElementById('pName').value.trim();const cat=document.getElementById('pCategory').value;const size=document.getElementById('pSize').value.trim()||'साइज़ के लिए WhatsApp करें';const file=document.getElementById('pPhoto').files[0];if(!name||!file){alert('कपड़े का नाम और फोटो दोनों डालें।');return}const reader=new FileReader();reader.onload=()=>{products.unshift({id:Date.now(),name,category:cat,size,photo:reader.result});save();render();document.getElementById('pName').value='';document.getElementById('pSize').value='';document.getElementById('pPhoto').value='';alert('प्रोडक्ट इस डिवाइस में जोड़ दिया गया।')};reader.readAsDataURL(file)}
+render();renderCart();
+</script>
+</body>
+</html>
